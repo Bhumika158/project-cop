@@ -1,0 +1,102 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+}
+
+header {
+    background-color: #f4f4f4;
+    padding: 10px 20px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+}
+
+h2 {
+    color: #333;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Tooltip styles */
+.tooltip {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border: 1px solid grey; /* Grey border */
+    color: grey;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    position: relative;
+    background-color: transparent;
+}
+
+
+/* Tooltip text */
+.tooltip:hover::after {
+    content: attr(title); /* Show the title text */
+    visibility: visible;
+    position: absolute;
+    background-color: #f9f9f9; /* Light background */
+    color: black; /* Text color */
+    text-align: center; /* Center-align the text */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px 12px; /* Padding inside the box */
+    border: 1px solid #ddd; /* Light border */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    bottom: 125%; /* Position above the circle */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%);
+    z-index: 10; /* Ensure it appears above other elements */
+    white-space: normal; /* Allow text to wrap */
+    font-size: 12px; /* Text size */
+    font-weight: normal; /* Normal weight */
+    min-width: 150px; /* Set a minimum width */
+    max-width: 300px; /* Set a maximum width to prevent overflow */
+    word-wrap: break-word; /* Break long words if needed */
+}
+
+.tooltip:hover::after {
+    visibility: visible;
+}
