@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Flash Messages Section -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<form method="POST" enctype="multipart/form-data">
+    <!-- Project Information Section -->
+    <h2>Project Information</h2>
+
+    <label for="project_name">Project Name <span style="color: red;">*</span>:</label>
+    <input type="text" id="project_name" name="project_name" value="{{ data.get('project_name', '') }}" required>
+
+    <label for="description">Project Description <span style="color: red;">*</span>:</label>
+    <textarea id="description" name="description" required>{{ data.get('description', '') }}</textarea>
+
+    <label for="benefits">Benefits of the Project <span style="color: red;">*</span>:</label>
+    <textarea id="benefits" name="benefits" required>{{ data.get('benefits', '') }}</textarea>
+
+    <label for="requestor_name">Requestor Name <span style="color: red;">*</span>:</label>
+    <input type="text" id="requestor_name" name="requestor_name" value="{{ data.get('requestor_name', '') }}" required>
+
+    <label for="requestor_email">Requestor Email <span style="color: red;">*</span>:</label>
+    <input type="email" id="requestor_email" name="requestor_email" value="{{ data.get('requestor_email', '') }}" required>
+
+    <!-- Timeline Section -->
+    <h2>Timeline Information</h2>
+
+    <label for="sit_timeline">SIT Release Date:</label>
+    <input type="date" id="sit_timeline" name="sit_timeline" value="{{ data.get('sit_timeline', '') }}">
+
+    <label for="uat_timeline">UAT Release Date:</label>
+    <input type="date" id="uat_timeline" name="uat_timeline" value="{{ data.get('uat_timeline', '') }}">
+
+    <label for="prod_timeline">PROD Release Date:</label>
+    <input type="date" id="prod_timeline" name="prod_timeline" value="{{ data.get('prod_timeline', '') }}">
+
+    <!-- Volume Information Section -->
+    <h2>Volume Information</h2>
+
+    <label for="volume_day">Avg Volume/day <span style="color: red;">*</span>:</label>
+    <input type="text" id="volume_day" name="volume_day" value="{{ data.get('volume_day', '') }}" required>
+
+    <label for="payload_size">Payload Size in MB (request/response) <span style="color: red;">*</span>:</label>
+    <input type="text" id="payload_size" name="payload_size" value="{{ data.get('payload_size', '') }}" required>
+
+    <label for="peak_tps">Peak TPS <span style="color: red;">*</span>:</label>
+    <input type="text" id="peak_tps" name="peak_tps" value="{{ data.get('peak_tps', '') }}" required>
+
+    <label for="volume_category">Volume Category (Batch/RealTime/Both) <span style="color: red;">*</span>:</label>
+    <select id="volume_category" name="volume_category" required>
+        <option value="RealTime">RealTime</option>
+        <option value="Batch">Batch</option>
+        <option value="Both">Both</option>
+    </select>
+
+    <!-- Source Information Section -->
+    <h2>Source Information</h2>
+
+    <label for="source_app">Source App(Vendor Name) <span style="color: red;">*</span>:</label>
+    <input type="text" id="source_app" name="source_app" value="{{ data.get('source_app', '') }}" required>
+
+    <label for="vendor_auth_mechanism">Vendor Auth Mechanism <span style="color: red;">*</span>:</label>
+    <select id="vendor_auth_mechanism" name="vendor_auth_mechanism" required onchange="toggleAuthFields()">
+        <option value="mTLS+OAuth">mTLS+OAuth</option>
+        <option value="mTLS">mTLS</option>
+        <option value="OAuth">OAuth</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <div id="auth_justification" style="display:none;">
+        <label for="auth_justification">Justification:</label>
+        <textarea id="auth_justification" name="auth_justification">{{ data.get('auth_justification', '') }}</textarea>
+    </div>
+
+    <div id="cert_fields">
+        <label for="source_cn_nonprod">Source Certificate CN Info (Non-Prod) <span style="color: red;">*</span>:</label>
+        <input type="text" id="source_cn_nonprod" name="source_cn_nonprod" value="{{ data.get('source_cn_nonprod', '') }}" required>
+
+        <label for="source_cn_prod">Source Certificate CN Info (PROD):</label>
+        <input type="text" id="source_cn_prod" name="source_cn_prod" value="{{ data.get('source_cn_prod', '') }}">
+    </div>
+
+    <!-- Additional Source Information -->
+    
+    <label for="pci_data">Contains PCI Data? <span style="color: red;">*</span>:</label>
+    <select id="pci_data" name="pci_data" required>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+    </select>
+
+    <label for="data_classification">Data Classification <span style="color: red;">*</span>:</label>
+    <select id="data_classification" name="data_classification" required>
+        <option value="Public">Public</option>
+        <option value="Internal">Internal</option>
+        <option value="Confidential">Confidential</option>
+        <option value="Restricted">Restricted</option>
+    </select>
+
+    <label for="streaming_needed">Streaming Needed? <span style="color: red;">*</span>:</label>
+    <select id="streaming_needed" name="streaming_needed" required>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+    </select>
+
+    <label for="content_type">Request Payload Content-Type <span style="color: red;">*</span>:</label>
+    <input type="text" id="content_type" name="content_type" value="{{ data.get('content_type', '') }}" required>
+
+    <label for="attachment_document">Contains Attachment/Document? <span style="color: red;">*</span>:</label>
+    <select id="attachment_document" name="attachment_document" required>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+    </select>
+    <!-- Backend Information Section -->
+    <h2>Backend Information</h2>
+
+    <label for="backend_app">Backend AppId (as per BAM) <span style="color: red;">*</span>:</label>
+    <input type="text" id="backend_app" name="backend_app" value="{{ data.get('backend_app', '') }}" required title="Enter the AppId for backend application">
+
+    <label for="dev_host">Backend Info (DEV) <span style="color: red;">*</span>:</label>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="dev_host" name="dev_host" value="{{ data.get('dev_host', '') }}" required placeholder="Enter Host">
+        <input type="text" id="dev_port" name="dev_port" value="{{ data.get('dev_port', '') }}" required placeholder="Enter Port">
+    </div>
+
+    <label for="sit_info">Backend Info (SIT):</label>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="sit_host" name="sit_host" value="{{ data.get('sit_host', '') }}"  placeholder="Enter Host">
+        <input type="text" id="sit_port" name="sit_port" value="{{ data.get('sit_port', '') }}"  placeholder="Enter Port">
+    </div>
+
+    <label for="uet_info">Backend Info (UAT):</label>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="uat_host" name="uat_host" value="{{ data.get('uat_host', '') }}"  placeholder="Enter Host">
+        <input type="text" id="uat_port" name="uat_port" value="{{ data.get('uat_port', '') }}"  placeholder="Enter Port">
+    </div>
+
+    <label for="prod_info">Backend Info (PROD):</label>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="prod_host" name="prod_host" value="{{ data.get('prod_host', '') }}"  placeholder="Enter Host">
+        <input type="text" id="prod_port" name="prod_port" value="{{ data.get('prod_port', '') }}"  placeholder="Enter Port">
+    </div>
+
+    <label for="backend_auth">Backend Auth Mechanism <span style="color: red;">*</span>:</label>
+    <select id="backend_auth" name="backend_auth" required>
+        <option value="mTLS">mTLS</option>
+        <option value="JWT">JWT</option>
+    </select>
+    <!-- Proxy Information Section -->
+    <h2>Proxy Information</h2>
+    <label for="api_display_name">API Display Name<span style="color: red;">*</span>:</label>
+    <input type="text" id="api_display_name" name="api_display_name" value="{{ data.get('api_display_name', '') }}" required pattern="^[a-zA-Z0-9]+-[a-zA-Z0-9]+-v1$" title="API Display Name must start with 'AppId-' followed by proxy functionality and '-v1'" placeholder="Enter API Display Name in AppId-Functionality-v1 format">
+
+    <label for="BasePath">Base Path as per BPPA standard <span style="color: red;">*</span>:</label>
+    <input type="text" id="BasePath" name="BasePath" value="{{ data.get('BasePath', '') }}" required pattern="^\/[^\/]+\/[^\/]+\/[^\/]+$" title="Base path must start with '/' with minimum 3 slashes" placeholder="Enter Base Path, should start with '/' with minimum 3 slashes">
+
+    <label for="num_api_paths">Number of API Paths <span style="color: red;">*</span>:</label>
+    <select id="num_api_paths" name="num_api_paths" onchange="toggleApiFields()" required>
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <div id="custom_api_count" style="display:none;">
+        <label for="custom_api_count_input">Specify number of API Paths:</label>
+        <input type="number" id="custom_api_count_input" name="custom_api_count" min="6" onchange="toggleApiFields()">
+    </div>
+
+    <div id="api_info_container"></div>
+    <!-- File Upload Section -->
+    <label for="oas_file">OAS Spec File (api.json) <span style="color: red;">*</span>:</label>
+    <input type="file" id="oas_file" name="oas_file" accept=".json" required onchange="validateOasFile()">
+    <div id="oas_file_error" class="error-message" style="color: red; display: none;">The file must be named api.json.</div>
+    <a href="/static/sample_oas.yaml" download>Download Sample OAS</a>
+
+    <label for="postman_file">Postman Collection File (<anything>.postman_collection.json) <span style="color: red;">*</span>:</label>
+    <input type="file" id="postman_file" name="postman_file" accept=".json" required onchange="validatePostmanFile()">
+    <div id="postman_file_error" class="error-message" style="color: red; display: none;">The file must have a .postman_collection.json extension.</div>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+</form>
+<script>
+function toggleApiFields() {
+    const apiCount = document.getElementById("num_api_paths").value;
+    const customCountInput = document.getElementById("custom_api_count_input");
+    const customCountDiv = document.getElementById("custom_api_count");
+    const apiInfoContainer = document.getElementById("api_info_container");
+    apiInfoContainer.innerHTML = ""; // Clear previous fields
+
+    let count = 0;
+
+    if (apiCount === "Other") {
+        customCountDiv.style.display = "block";
+        count = parseInt(customCountInput.value) || 0;
+    } else {
+        customCountDiv.style.display = "none";
+        count = parseInt(apiCount);
+    }
+
+    for (let i = 1; i <= count; i++) {
+        apiInfoContainer.innerHTML += `
+            <div class="api-group">
+    <!-- Operation Name -->
+    <div>
+        <label for="op_name_${i}">Operation Name ${i} <span style="color: red;">*</span>:</label>
+        <input type="text" id="op_name_${i}" name="op_name_${i}" required pattern="^[a-zA-Z0-9]+$" 
+               title="Provide relevant Op_Name for this API" placeholder="Enter Op Name">
+    </div>
+
+    <!-- API Path -->
+    <div>
+        <label for="api_path_${i}">API Path ${i} <span style="color: red;">*</span>:</label>
+        <input type="text" id="api_path_${i}" name="api_path_${i}" required pattern="^/.*" 
+               title="API path must start with '/'" placeholder="Enter API path">
+    </div>
+
+    <!-- Request Method -->
+    <div>
+        <label for="request_method_${i}">Request Method <span style="color: red;">*</span>:</label>
+        <select id="request_method_${i}" name="request_method_${i}" required>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+            <option value="DELETE">DELETE</option>
+            <option value="COPY">COPY</option>
+            <option value="HEAD">HEAD</option>
+            <option value="OPTIONS">OPTIONS</option>
+        </select>
+    </div>
+</div>`;
+
+
+}
+
+}
+
+// Initialize API fields on page load
+document.addEventListener("DOMContentLoaded", toggleApiFields);
+
+// Update fields dynamically when custom input changes
+document.getElementById("custom_api_count_input").addEventListener("input", toggleApiFields);
+
+// Update fields dynamically when custom input changes
+document.getElementById("custom_api_count_input").addEventListener("input", () => toggleApiFields());
+
+function toggleAuthFields() {
+    const authMechanism = document.getElementById("vendor_auth_mechanism").value;
+    const justificationField = document.getElementById("auth_justification");
+    const certFields = document.getElementById("cert_fields");
+    justificationField.style.display = (authMechanism !== 'mTLS+OAuth') ? 'block' : 'none';
+    certFields.style.display = (authMechanism === 'OAuth' || authMechanism === 'Other') ? 'none' : 'block';
+}
+
+function validateOasFile() {
+    const oasFileInput = document.getElementById('oas_file');
+    const errorDiv = document.getElementById('oas_file_error');
+
+    if (oasFileInput.files.length > 0) {
+        const fileName = oasFileInput.files[0].name;
+
+        if (fileName !== 'api.json') {
+            errorDiv.style.display = 'block';
+            oasFileInput.value = ''; // Clear the input
+        } else {
+            errorDiv.style.display = 'none';
+        }
+    }
+}
+
+function validatePostmanFile() {
+    const postmanFileInput = document.getElementById('postman_file');
+    const errorDiv = document.getElementById('postman_file_error');
+
+    if (postmanFileInput.files.length > 0) {
+        const fileName = postmanFileInput.files[0].name;
+
+        if (!fileName.endsWith('.postman_collection.json')) {
+            errorDiv.style.display = 'block';
+            postmanFileInput.setCustomValidity("Invalid file format."); // Shows error but keeps input
+        } else {
+            errorDiv.style.display = 'none';
+            postmanFileInput.setCustomValidity(""); // Reset error
+        }
+    }
+}
+
+
+</script>
+{% endblock %}
