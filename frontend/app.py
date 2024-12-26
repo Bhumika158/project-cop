@@ -15,9 +15,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # JIRA Config
-JIRA_URL= 'https://bhumikapeshwani158.atlassian.net'
-JIRA_USER= 'bhumikapeshwani158@gmail.com'
-JIRA_API_TOKEN='ATATT3xFfGF0GoY0VVuPQXsmY16Xe2jgFbslEnYjl5xx8NncoF6499bNBc4ew8YUDHNywMNDCCo3UKXPtS-J8Mc8gCKS5ucf1_nv3ov3UmJ6gdUoZ02SL8tg8tIcHlArSDEyGse5C2MCf3JtGkibCnaXZYQCPCkQ_zf35P-TKQYkfJkOZfAx52Q=5DFC47DE'
+JIRA_URL= 'https://xxx.atlassian.net'
+JIRA_USER= 'xxx@gmail.com'
+JIRA_API_TOKEN='xxx'
 JIRA_PROJECT_KEY= 'KAN'
 
 
